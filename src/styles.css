@@ -57,10 +57,6 @@ canvas {
   height: fit-content;
   width: 300px;
 }
-/* .fit-picture {
-  width: 25px;
-  height: 25px;
-} */
 
 .cardTitle {
   background-color: #214533;
@@ -70,4 +66,39 @@ canvas {
   width: 400%;
   margin: 0;
   padding :0;
+}
+
+/* src/LandingPage.css */
+.landing-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.enter-title {
+  z-index: 10000; 
+  position: relative;
+  color: #F0F0F0;
+}
+
+.enter-button {
+  z-index: 10000; 
+  position: relative;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #F0F0F0;
+  background-color: transparent;
+  border: 2px solid #F0F0F0;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-top: 20px;
+  width: 25%
+}
+
+.enter-button:hover {
+  background-color: #F0F0F0;
+  color: #214533;
 }
