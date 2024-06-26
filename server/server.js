@@ -1,211 +1,128 @@
-const express = require('express')
+const express = require('express');
 const path = require('path');
-const app = express()
-const port = 3003
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const passwordless = require('passwordless');
+const MongoStore = require('passwordless-mongostore-bcrypt-node');
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+const app = express();
+const port = 3003;
 
-var router = express.Router();
+/*
+  mongod
+  node server.js
+  mongo
+*/
 
-var passwordless = require('passwordless');
-var MongoStore = require('passwordless-mongostore-bcrypt-node');
-var bson = require('bson');
-// var bson = require('bson');
-var bcrypt = require('bcryptjs');
+// MongoDB connection URL
+const uri = "mongodb+srv://devgovindjisoftware:Kw1vVnJpal5XAwSb@govindjis-portals.bcknp5q.mongodb.net/passwordless-simple-mail?retryWrites=true&w=majority";
+// const uri = "mongodb+srv://devgovindjisoftware:Kw1vVnJpal5XAwSb@govindjis-portals.bcknp5q.mongodb.net/?retryWrites=true&w=majority&appName=Govindjis-Portals";
+// const uri ='mongodb://localhost:27015/passwordless-simple-mail';
+// const uri = "mongodb+srv://devgovindjisoftware:Kw1vVnJpal5XAwSb@govindjis-portals.bcknp5q.mongodb.net:27017,govindjis-portals-shard-00-00.bcknp5q.mongodb.net:27017,govindjis-portals-shard-00-01.bcknp5q.mongodb.net:27017,govindjis-portals-shard-00-02.bcknp5q.mongodb.net:27017/passwordless-simple-mail?ssl=true&replicaSet=atlas-3r2y89-shard-0&authSource=admin&retryWrites=true&w=majority";
+// const uri = "mongodb://devgovindjisoftware:Kw1vVnJpal5XAwSb@govindjis-portals-shard-00-00.bcknp5q.mongodb.net:27017,govindjis-portals-shard-00-01.bcknp5q.mongodb.net:27017,govindjis-portals-shard-00-02.bcknp5q.mongodb.net:27017/passwordless-simple-mail?ssl=true&replicaSet=atlas-3r2y89-shard-0&authSource=admin&retryWrites=true&w=majority";
 
-// var email = require('emailjs');
-// import email from 'emailjs';
-
-// Displays FE - Serve static files from the project root
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, '../build')));
 
-// Handles any requests that don't match the ones above
-app.get('*', (req, res) => {
-    // res.sendFile(path.join(__dirname, '../build', 'index.html'));
-    res.sendFile(path.join(__dirname, '../public', 'login.html'));
+// Setup body parser for form data
+app.use(bodyParser.urlencoded({ extended: false }));
 
+// Setup session middleware
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 }
+}));
+
+// Initialize Passwordless with MongoStore
+// passwordless.init(new MongoStore(uri));
+passwordless.init(new MongoStore(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}));
+
+// Middleware to support sessions
+app.use(passwordless.sessionSupport());
+app.use(passwordless.acceptToken({ successRedirect: '/' }));
+
+// Setup routes
+const router = express.Router();
+
+// Display login page
+router.get('/login', function(req, res) {
+  res.sendFile(path.join(__dirname, '../public', 'login.html'));
+});
+
+// Handle token request
+router.post('/sendtoken',
+  passwordless.requestToken(
+    function(user, delivery, callback) {
+      const users = [
+        { id: 1, email: 'marc@example.com' },
+        { id: 2, email: 'alice@example.com' }
+      ];
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].email === user.toLowerCase()) {
+          return callback(null, users[i].id);
+        }
+      }
+      callback(null, null);
+    }),
+  function(req, res) {
+    res.sendFile(path.join(__dirname, '../public', 'sent.html'));
   });
 
+// Restricted route
+router.get('/restricted', passwordless.restricted(), function(req, res) {
+  res.sendFile(path.join(__dirname, '../public', 'restricted.html'));
+});
 
-var session = require('express-session')
+// Logout route
+router.get('/logout', passwordless.logout(), function(req, res) {
+  res.redirect('/');
+});
 
-// app.get('/', (req, res) => res.send('Hello World!'))
-// Use the session middleware
-app.use(session({ 
-    secret: 'keyboard cat', 
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60000 }
-}))
+app.use('/', router);
 
+// Default route for unmatched requests
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public', 'login.html'));
+});
 
-// Access the session as req.session
-app.get('/hello', function(req, res, next) {
-    // this should be a template from the FE
-    if (req.session.views) {
-    // if (req.session.views && sendToken has resolved) {
+// Start the server and set up the email server
+(async () => {
+  try {
+    // Dynamically import emailjs
+    const emailModule = await import('emailjs');
 
-        req.session.views++
-        res.sendFile(path.join(__dirname, '../build', 'index.html'));
-
-        console.log(`views: ${req.session.views}`)
-        console.log(`expires in: ${(req.session.cookie.maxAge / 1000)}`)
-
-    } else {
-        // req.session.views = 1
-        // res.end('welcome to the session demo. refresh!')
-        req.session.views = 1;
-        console.log('First visit, serving HTML template.');
-
-        // Serve the HTML template on the first load
-        res.sendFile(path.join(__dirname, '../public', 'index.html'));
-    }
-})
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
-
-// Function to set up email server asynchronously
-async function setupEmailServer() {
-    const email = await import('emailjs');
-        console.log('email: ', email)
-    return email.server.connect({
-      user: 'dev.govindji.software@gmail.com', 
-      password: 'yourPassword', 
-      host: 'yourSmtpHost', // service_g33gjnw
+    // Create an instance of SMTPClient
+    const smtpServer = new emailModule.SMTPClient({
+      user: 'dev.govindji.software@gmail.com',
+      password: 'Sanders_123',
+      host: 'smtp.gmail.com',
       ssl: true
     });
-  }
 
-  // Start the server and set up the email server
-(async () => {
-    try {
-      const smtpServer = await setupEmailServer();
-      console.log('SMTP server set up:', smtpServer);
-  
-      app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-      });
-    } catch (error) {
-      console.error('Error setting up SMTP server:', error);
-    }
-  })();
-
-// // send emails via email.js
-// (async () => {
-//     const email = await import('emailjs');
-//     // Your code using emailjs here
-//     console.log('email: ', email)
-//     var smtpServer  = email.server.connect({
-//         user:    yourEmail, 
-//         password: yourPwd, 
-//         host:    yourSmtp, 
-//         ssl:     true
-//     });
-//     console.log('smtpServer: ', smtpServer)
-// })();
-
- // Your MongoDB TokenStore
-var pathToMongoDb = 'mongodb://localhost/passwordless-simple-mail';
-passwordless.init(new MongoStore(pathToMongoDb));
-
-
-// Set up a delivery service
-passwordless.addDelivery(
-	function(tokenToSend, uidToSend, recipient, callback, req) {
-		var host = 'localhost:3003';
-		smtpServer.send({
-			text:    'Hello!\nAccess your account here: http://' 
-			+ host + '?token=' + tokenToSend + '&uid=' 
-			+ encodeURIComponent(uidToSend), 
-			from:    yourEmail, 
-			to:      recipient,
-			subject: 'Token for ' + host
-		}, function(err, message) { 
-			if(err) {
-				console.log(err);
-			}
-			callback(err);
-		});
-});
-
-// Middleware
-app.use(passwordless.sessionSupport());
-app.use(passwordless.acceptToken({ successRedirect: '/'}));
-
-// Session middleware via express-session
-
-
-
-
-
-// Routing
-/* GET login screen. */
-router.get('/login', function(req, res) {
-    // this should be a template from the FE
-    res.sendFile(path.join(__dirname, '../public', 'login.html'));
-
- });
- 
- /* POST login details. */
- var users = [
-	{ id: 1, email: 'marc@example.com' },
-	{ id: 2, email: 'alice@example.com' }
-];
-
- router.post('/sendtoken', 
-     passwordless.requestToken(
-         // Turn the email address into an user's ID
-         function(user, delivery, callback, req) {
-            console.log('sendtoken route!!!')
-            /*
-                *** MY PSEUDOCODE ***
-                -- after Login page, hit submit, call this method, then redirect to React App
-                - check if email is in DB 
-                - send email to user
-                - display 'Sent! page'
-                - if email is in DB
-                -- show app with all products and shopping cart
-                -- else show use Demo Page
-
-
-            */
-
-
-             /*
-             // usually you would want something like:
-             User.find({email: user}, callback(ret) {
-                if(ret) {
-                    callback(null, ret.id)
-                }
-                else {
-                    callback(null, null)
-                }
-           })
-           
-           // but you could also do the following 
-           // if you want to allow anyone:
-           // callback(null, user);
-           */
-           for (var i = users.length - 1; i >= 0; i--) {
-            if(users[i].email === user.toLowerCase()) {
-                return callback(null, users[i].id);
-            }
+    passwordless.addDelivery((tokenToSend, uidToSend, recipient, callback) => {
+      const host = 'localhost:3003';
+      smtpServer.send({
+        text: `Hello!\nAccess your account here: http://${host}?token=${tokenToSend}&uid=${encodeURIComponent(uidToSend)}`,
+        from: 'dev.govindji.software@gmail.com',
+        to: recipient,
+        subject: `Token for ${host}`
+      }, (err, message) => {
+        if (err) {
+          console.log(err);
         }
-        callback(null, null);
-        }),
-     function(req, res) {
-        // success!
-           res.render('sent');
-        
- });
+        callback(err);
+      });
+    });
 
- /* GET restricted site. */
-router.get('/restricted', passwordless.restricted(),
-function(req, res) {
- // render the DEMO page
-});
-
-/* Logout user */
-router.get('/logout', passwordless.logout(),
-	function(req, res) {
-		res.redirect('/');
-});
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error('Error setting up SMTP server:', error);
+  }
+})();
