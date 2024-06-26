@@ -68,6 +68,47 @@ export const App = () => (
       </Frame>
       <Frame id="05" name="tea" author="Omar Faruq Tawsif">
         <Gltf src="fiesta_tea-transformed.glb" position={[0, -2, -3]} />
+        {/* <Html
+                position={ [ 0, 0, 0] }
+                wrapperClass="label"
+                center
+                distanceFactor={ 40 }
+                // occlude={ [ sphere, cube ] }
+                // onOcclude={(hidden) => null}
+              >
+                <img
+  class="fit-picture"
+  src="legacy.png"
+  alt="Grapefruit slice atop a pile of other slices" />
+                <div class="card">
+                Govindji’s mission statement consists of five segments, all with equal emphasis
+To provide a shopping environment that optimally enhances the experience of shopping. This is achieved through providing a high level of guest hospitality in an elegant, friendly, high-luxury setting.
+Providing the highest level of product quality and also providing a full depth of product selection, surpassing all competitors.
+Adhering to the highest ethical standard in conducting business.
+A fixed pricing policy by providing the most competitive price upfront.
+Promoting the Govindji’s name by always adhering to these values.
+
+                  <ul>
+                    <span class="cardTitle">
+                    18K Yellow Gold Diamond Ring 
+                    </span>
+                    <li>
+                    DR1146 
+                    </li>
+                    <li>
+                    Handcrafted 18K White Gold Diamond Band
+                    </li>
+                    <li>
+                    Diamond Weight: 0.45ct
+                    </li>
+                    <li>
+                    $1,807
+                    </li>
+                  </ul>
+
+                </div>
+                            
+              </Html> */}
       </Frame>
       <Frame id="06" name="still" author="Omar Faruq Tawsif" bg="#d1d1ca" position={[1.15, 0, 0]} rotation={[0, -0.5, 0]}>
         <Gltf src="still_life_based_on_heathers_artwork-transformed.glb" scale={2} position={[0, -0.8, -4]} />

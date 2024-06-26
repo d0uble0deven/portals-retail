@@ -55,8 +55,13 @@ canvas {
   background-color: azure;
   border: #214533 solid 2px;
   height: fit-content;
-  width: 500px;
+  width: 300px;
 }
+/* .fit-picture {
+  width: 25px;
+  height: 25px;
+} */
+
 .cardTitle {
   background-color: #214533;
   border: #214533 dashed 2px;

@@ -26,15 +26,15 @@ function Root() {
         </a>
         <div style={{ position: 'absolute', bottom: 40, right: 40, fontSize: '13px' }}>15/06/2023</div>
         <Logo style={{ position: 'absolute', bottom: 40, left: 40, width: 30 }} />
-        <a style={{ position: 'absolute', top: 40, left: 40, fontSize: '13px' }} href="#" onClick={() => setLocation('/')}>
+        <a style={{ position: 'absolute', top: 30, left: 30, fontSize: '13px' }} href="#" onClick={() => setLocation('/')}>
           {params ? '< back' : 'double click to enter portal'}
         </a>
-        <a style={{ position: 'absolute', top: 40, left: 1000, fontSize: '130px', color: '#214533' }} href="#" onClick={() => setLocation('/')}>
+        <a style={{ position: 'absolute', top: 30, left: 1000, fontSize: '130px', color: '#214533' }} href="#" onClick={() => setLocation('/')}>
           Govindji's
         </a>
 
 
-        <a style={{ position: 'absolute', bottom: 40, left: 40, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/01')}>
+        <a style={{ position: 'absolute', bottom: 30, left: 30, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/01')}>
           {((params !== null) && (params.id === '01')) ? 
             <div class="card">
               <ul>
@@ -57,7 +57,7 @@ function Root() {
           }
           </a>
 
-        <a style={{ position: 'absolute', bottom: 40, left: 40, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/02')}>
+        <a style={{ position: 'absolute', bottom: 30, left: 30, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/02')}>
           {((params !== null) && (params.id === '02')) ? 
             <div class="card">
               <ul>
@@ -85,7 +85,7 @@ function Root() {
 
 
 
-        <a style={{ position: 'absolute', bottom: 40, left: 40, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/03')}>
+        <a style={{ position: 'absolute', bottom: 30, left: 30, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/03')}>
           {((params !== null) && (params.id === '03')) ? 
             <div class="card">
               <ul>
@@ -112,7 +112,7 @@ function Root() {
         </a>
 
 
-        <a style={{ position: 'absolute', bottom: 40, left: 40, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/04')}>
+        <a style={{ position: 'absolute', bottom: 30, left: 30, fontSize: '13px' }} href="#" onClick={() => setLocation('/item/04')}>
           {((params !== null) && (params.id === '04')) ? 
                 <div class="card">
 
