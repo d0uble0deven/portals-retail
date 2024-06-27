@@ -68,6 +68,32 @@ canvas {
   padding :0;
 }
 
+/* Mobile Detect Message */
+.mobile-message-container {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  height: 100vh;
+  /* text-align: center; */
+}
+.mobile-message-title {
+  z-index: 10000; 
+  position: relative;
+  color: #F0F0F0;
+}
+.mobile-message-message {
+  z-index: 10000; 
+  position: relative;
+  padding: 10px 20px;
+  font-size: 26px;
+  color: #F0F0F0;
+  /* background-color: transparent; */
+  /* border: 2px solid #F0F0F0; */
+  /* margin-top: 20px; */
+  /* width: 25% */
+}
+
 /* src/LandingPage.css */
 .landing-container {
   display: flex;

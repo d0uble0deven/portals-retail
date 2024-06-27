@@ -201,8 +201,8 @@ console.log('pendo init')
 
 
               </div>{' '}
-            </>
-          )
-        }
+    </>
+  )
+}
 
 createRoot(document.getElementById('root')).render(<Root />)
