@@ -15,6 +15,54 @@ License: CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 */
 
 function Root() {
+  // get location coordinates here
+  let userLocation
+  if (navigator.geolocation) {
+    userLocation = navigator.geolocation.getCurrentPosition(showPosition, handleError);
+  } else {
+    console.error("Geolocation is not supported by this browser.");
+  }
+  
+  function showPosition(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    console.log("Latitude:", latitude, "Longitude:", longitude);
+  }
+  function handleError(error) {
+    switch(error.code) {
+      case error.PERMISSION_DENIED:
+        console.error("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        console.error("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        console.error("The request to get user location timed out.");
+        break;
+      case error.UNKNOWN_ERROR:
+        console.error("An unknown error occurred.");
+        break;
+    }
+  }
+
+  // starts pendo tracking
+  window.pendo.initialize({
+    visitor: {
+        id: "<visitor-id-goes-here>",
+        email: "<email-goes-here>",
+        userPermissions: "<user-permissions-goes-here>",
+    },
+
+    account: {
+        id: "<account-id-goes-here>",
+        accountName: "<account-name-goes-here>",
+        payingStatus: "<paying-status-goes-here>",
+        location: userLocation, 
+        accountValue: "<account-value-goes-here>",
+    }
+});
+console.log('pendo init')
+
   const [, params] = useRoute('/item/:id')
   const [, setLocation] = useLocation()
   console.log("params: " , params)
