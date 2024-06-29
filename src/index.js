@@ -82,7 +82,7 @@ console.log('pendo init')
         </a>
         <div style={{ position: 'absolute', bottom: 40, right: 40, fontSize: '13px' }}>15/06/2023</div>
         <Logo style={{ position: 'absolute', bottom: 40, left: 40, width: 30 }} />
-        <a style={{ position: 'absolute', top: 30, left: 30, fontSize: '13px' }} href="/demo" onClick={() => setLocation('/')}>
+        <a style={{ position: 'absolute', top: 30, left: 30, fontSize: '13px' }} href="/demo" onClick={() => setLocation('/demo')}>
           {params ? '< back' : 'double click to enter portal'}
         </a>
         <a style={{ position: 'absolute', top: 30, left: 1000, fontSize: '130px', color: '#214533' }} href="#" onClick={() => setLocation('/')}>
